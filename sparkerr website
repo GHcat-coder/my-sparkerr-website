@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Market - Create, Buy, Sell AI Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== GLOBAL STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sage-green: #A8C3A0;
+            --dark-green: #3E594C;
+            --cream: #FAF9F6;
+            --charcoal: #2E2E2E;
+            --light-gray: #f5f5f5;
+            --border-gray: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--sage-green);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: var(--charcoal);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark-green);
+            border: 2px solid var(--sage-green);
+        }
+
+        .btn-secondary:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* ===== PAGE SECTIONS ===== */
+        .page {
+            display: none;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ===== HOMEPAGE STYLES ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--sage-green) 0%, var(--dark-green) 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tools-grid {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--sage-green);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-green);
+        }
+
+        .tool-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--sage-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .creator-section {
+            background: var(--light-gray);
+            padding: 80px 0;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--sage-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        /* ===== SEARCH PAGE STYLES ===== */
+        .search-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--sage-green);
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .search-results {
+            padding: 2rem 0;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-count {
+            color: var(--dark-green);
+            font-weight: 600;
+        }
+
+        /* ===== PRODUCT PAGE STYLES ===== */
+        .product-header {
+            padding: 2rem 0;
+            background: white;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .product-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 3rem 0;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 400px;
+            background: var(--sage-green);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .product-details h1 {
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            color: var(--sage-green);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .reviews-section {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .review-form {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .review-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--charcoal);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--sage-green);
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-controls {
+                flex-direction: column;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .product-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .text-center { text-align: center; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mt-2 { margin-top: 2rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">AI Market</div>
+                <ul class="nav-links">
+                    <li><a onclick="showPage('homepage')">Explore</a></li>
+                    <li><a onclick="showPage('search')">Browse Tools</a></li>
+                    <li><a onclick="showCreatorPage()">Create</a></li>
+                    <li><a onclick="showPage('homepage')">Join</a></li>
+                </ul>
+                <button class="mobile-menu">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HOMEPAGE ===== -->
+    <div id="homepage" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1 class="fade-in">Create, buy, or sell AI tools with ease</h1>
+                <h2 class="fade-in">No coding needed. Build solutions or find the perfect AI today!</h2>
+                <div class="hero-buttons fade-in">
+                    <a href="#" class="btn btn-primary" onclick="showPage('search')">Browse Tools</a>
+                    <a href="#" class="btn btn-secondary" onclick="showCreatorPage()">Start Creating</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools Grid -->
+        <section class="tools-grid">
+            <div class="container">
+                <h2 class="section-title">Popular AI Tools</h2>
+                <div class="grid" id="featuredTools">
+                    <!-- Tools will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Creator Section -->
+        <section class="creator-section">
+            <div class="container">
+                <h2 class="section-title">Start Selling Your AI</h2>
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Build Your AI</h3>
+                        <p>Use our simple tools to create powerful AI solutions without coding.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Set Your Price</h3>
+                        <p>Choose your pricing model and target audience.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Start Earning</h3>
+                        <p>Publish your AI and start earning from day one.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="#" class="btn btn-primary" onclick="showCreatorPage()">Join as Creator</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== SEARCH RESULTS PAGE ===== -->
+    <div id="search" class="page">
+        <section class="search-header">
+            <div class="container">
+                <div class="search-controls">
+                    <input type="text" class="search-input" placeholder="Search AI tools..." id="searchInput">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="design">Design</option>
+                        <option value="analytics">Analytics</option>
+                        <option value="content">Content</option>
+                    </select>
+                    <select class="filter-select" id="priceFilter">
+                        <option value="">All Prices</option>
+                        <option value="free">Free</option>
+                        <option value="low">$0-50</option>
+                        <option value="mid">$50-200</option>
+                        <option value="high">$200+</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="search-results">
+            <div class="container">
+                <div class="results-header">
+                    <div class="results-count" id="resultsCount">24 AI tools found</div>
+                    <select class="filter-select">
+                        <option>Sort by: Best Rated</option>
+                        <option>Sort by: Price Low → High</option>
+                        <option>Sort by: Price High → Low</option>
+                        <option>Sort by: Trending</option>
+                    </select>
+                </div>
+                <div class="grid" id="searchResults">
+                    <!-- Search results will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== PRODUCT PAGE ===== -->
+    <div id="product" class="page">
+        <section class="product-header">
+            <div class="container">
+                <a href="#" onclick="showPage('search')" style="color: var(--sage-green); text-decoration: none;">← Back to search</a>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="product-content">
+                <div class="product-image" id="productImage">
+                    🤖
+                </div>
+                <div class="product-details">
+                    <h1 id="productTitle">AI Writing Assistant</h1>
+                    <div class="rating">
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                        <span>(4.8 - 127 reviews)</span>
+                    </div>
+                    <div class="product-price" id="productPrice">$99</div>
+                    <p id="productDescription">Revolutionary AI writing assistant that helps you create compelling content in seconds. Perfect for blogs, marketing copy, and creative writing.</p>
+                    <div class="product-actions">
+                        <button class="btn btn-primary" onclick="purchaseProduct()">Purchase</button>
+                        <button class="btn btn-secondary" onclick="contactSeller()">Contact Seller</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section class="reviews-section">
+            <div class="container">
+                <h2>Reviews & Ratings</h2>
+                
+                <!-- Review Form -->
+                <div class="review-form">
+                    <h3>Add Your Review</h3>
+                    <div class="form-group">
+                        <label>Rating</label>
+                        <div class="rating-input">
+                            <span onclick="setRating(1)">⭐</span>
+                            <span onclick="setRating(2)">⭐</span>
+                            <span onclick="setRating(3)">⭐</span>
+                            <span onclick="setRating(4)">⭐</span>
+                            <span onclick="setRating(5)">⭐</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Your Review</label>
+                        <textarea rows="4" placeholder="Share your experience with this AI tool..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+                </div>
+
+                <!-- Existing Reviews -->
+                <div id="reviewsList">
+                    <!-- Reviews will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Support</a>
+                <a href="#">FAQs</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+            <p>&copy; 2024 AI Market. Fuel your ideas. Discover your AI.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== SAMPLE DATA =====
+        const sampleTools = [
+            {
+                id: 1,
+                name: "AI Writing Assistant",
+                icon: "✍️",
+                price: 99,
+                rating: 4.8,
+                reviews: 127,
+                category: "content",
+                description: "Revolutionary AI writing assistant that helps you create compelling content in seconds."
+            },
+            {
+                id: 2,
+                name: "Smart Analytics Pro",
+                icon: "📊",
+                price: 149,
+                rating: 4.6,
+                reviews: 89,
+                category: "analytics",
+                description: "Advanced analytics platform powered by machine learning algorithms."
+            },
+            {
+                id: 3,
+                name: "Design Generator",
+                icon: "🎨",
+                price: 79,
+                rating: 4.9,
+                reviews: 203,
+                category: "design",
+                description: "Create stunning designs automatically with AI-powered creativity."
+            },
+            {
+                id: 4,
+                name: "Productivity Bot",
+                icon: "⚡",
+                price: 59,
+                rating: 4.7,
+                reviews: 156,
+                category: "productivity",
+                description: "Automate your workflow and boost productivity with intelligent automation."
+            },
+            {
+                id: 5,
+                name: "Code Assistant",
+                icon: "💻",
+                price: 199,
+                rating: 4.5,
+                reviews: 94,
+                category: "productivity",
+                description: "AI-powered coding companion that writes, reviews, and debugs code."
+            },
+            {
+                id: 6,
+                name: "Voice Synthesizer",
+                icon: "🎤",
+                price: 129,
+                rating: 4.4,
+                reviews: 67,
+                category: "content",
+                description: "Generate natural-sounding voices for any content or application."
+            }
+        ];
+
+        const sampleReviews = [
+            {
+                name: "Sarah Johnson",
+                rating: 5,
+                comment: "Absolutely amazing! This AI tool saved me hours of work and the quality is outstanding.",
+                date: "2024-01-15"
+            },
+            {
+                name: "Mike Chen",
+                rating: 4,
+                comment: "Really good tool with great features. Could use some minor improvements but overall very satisfied.",
+                date: "2024-01-10"
+            },
+            {
+                name: "Emma Davis",
+                rating: 5,
+                comment: "Game changer! The AI is incredibly smart and intuitive. Highly recommend to everyone.",
+                date: "2024-01-08"
+            }
+        ];
+
+        let currentProduct = null;
+        let userRating = 0;
+
+        // ===== NAVIGATION FUNCTIONS =====
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Initialize page content
+            if (pageId === 'homepage') {
+                loadFeaturedTools();
+            } else if (pageId === 'search') {
+                loadSearchResults();
+            }
+        }
+
+        function showProduct(productId) {
+            currentProduct = sampleTools.find(tool => tool.id === productId);
+            if (currentProduct) {
+                document.getElementById('productTitle').textContent = currentProduct.name;
+                document.getElementById('productPrice').textContent = `$${currentProduct.price}`;
+                document.getElementById('productDescription').textContent = currentProduct.description;
+                document.getElementById('productImage').textContent = currentProduct.icon;
+                
+                loadReviews();
+                showPage('product');
+            }
+        }
+
+        function showCreatorPage() {
+            alert('Creator dashboard coming soon! Join our creator program to start building and selling AI tools.');
+        }
+
+        // ===== CONTENT LOADING FUNCTIONS =====
+        function loadFeaturedTools() {
+            const container = document.getElementById('featuredTools');
+            container.innerHTML = '';
+            
+            sampleTools.slice(0, 6).forEach(tool => {
+                const toolCard = createToolCard(tool);
+                container.appendChild(toolCard);
+            });
+        }
+
+        function loadSearchResults() {
+            const container = document.getElementById('searchResults');
+            container.innerHTML = '';
+            
+            sampleTools.forEach(tool => {
+                const toolCard = createToolCard(tool);
+                container.appendChild(toolCard);
+            });
+            
+            updateResultsCount(sampleTools.length);
+        }
+
+        function createToolCard(tool) {
+            const card = document.createElement('div');
+            card.className = 'tool-card';
+            card.onclick = () => showProduct(tool.id);
+            
+            card.innerHTML = `
+                <div class="tool-icon">${tool.icon}</div>
+                <div class="tool-title">${tool.name}</div>
+                <div class="tool-price">$${tool.price}</div>
+                <div class="rating">
+                    <span class="stars">${'⭐'.repeat(Math.floor(tool.rating))}</span>
+                    <span>(${tool.rating} - ${tool.reviews} reviews)</span>
+                </div>
+                <p style="margin-top: 1rem; color: #666;">${tool.description}</p>
+            `;
+            
+            return card;
+        }
+
+        function loadReviews() {
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = '';
+            
+            sampleReviews.forEach(review => {
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review-item';
+                reviewElement.innerHTML = `
+                    <div class="review-header">
+                        <div class="reviewer-name">${review.name}</div>
+                        <div class="rating">
+                            <span class="stars">${'⭐'.repeat(review.rating)}</span>
+                            <span style="margin-left: 0.5rem; color: #666;">${review.date}</span>
+                        </div>
+                    </div>
+                    <p>${review.comment}</p>
+                `;
+                container.appendChild(reviewElement);
+            });
+        }
+
+        function updateResultsCount(count) {
+            document.getElementById('resultsCount').textContent = `${count} AI tools found`;
+        }
+
+        // ===== INTERACTION FUNCTIONS =====
+        function setRating(rating) {
+            userRating = rating;
+            const stars = document.querySelectorAll('.rating-input span');
+            stars.forEach((star, index) => {
+                star.style.opacity = index < rating ? '1' : '0.3';
+            });
+        }
+
+        function submitReview() {
+            const name = document.querySelector('input[type="text"]').value;
+            const comment = document.querySelector('textarea').value;
+            
+            if (!name || !comment || userRating === 0) {
+                alert('Please fill in all fields and select a rating.');
+                return;
+            }
+            
+            alert('Thank you for your review! It has been submitted successfully.');
+            
+            // Reset form
+            document.querySelector('input[type="text"]').value = '';
+            document.querySelector('textarea').value = '';
+            setRating(0);
+        }
+
+        function purchaseProduct() {
+            alert(`Thank you for your purchase of ${currentProduct.name}! Redirecting to payment...`);
+        }
+
+        function contactSeller() {
+            alert('Opening contact form for the seller...');
+        }
+
+        // ===== SEARCH AND FILTER FUNCTIONS =====
+        document.getElementById('searchInput').addEventListener('input', filterResults);
+        document.getElementById('categoryFilter').addEventListener('change', filterResults);
+        document.getElementById('priceFilter').addEventListener('change', filterResults);
+
+        function filterResults() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const priceRange = document.getElementById('priceFilter').value;
+            
+            let filteredTools = sampleTools.filter(tool => {
+                const matchesSearch = tool.name.toLowerCase().includes(searchTerm) || 
+                                    tool.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || tool.category === category;
+                let matchesPrice = true;
+                
+                if (priceRange === 'free') matchesPrice = tool.price === 0;
+                else if (priceRange === 'low') matchesPrice = tool.price <= 50;
+                else if (priceRange === 'mid') matchesPrice = tool.price > 50 && tool.price <= 200;
+                else if (priceRange === 'high') matchesPrice = tool.price > 200;
+                
+                return matchesSearch && matchesCategory && matchesPrice;
+            });
+            
+            const container = document.getElementById('searchResults');
+            container.innerHTML = '';
+            
+            filteredTools.forEach(tool => {
+                const toolCard = createToolCard(tool);
+                container.appendChild(toolCard);
+            });
+            
+            updateResultsCount(filteredTools.length);
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFeaturedTools();
+            console.log('🚀 AI Marketplace initialized!');
+            console.log('Smart. Fast. Yours.');
+        });
+
+        // ===== MOBILE MENU =====
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>
+
+
